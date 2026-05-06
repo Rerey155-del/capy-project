@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../lib/api";
 
 import { TfiBookmark } from "react-icons/tfi";
 import { CiShare2 } from "react-icons/ci";
@@ -16,7 +16,7 @@ function SukuCadang() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/data_produk");
+        const response = await api.get("/data_produk");
         console.log(response.data);
         setProducts(response.data);
       } catch (error) {

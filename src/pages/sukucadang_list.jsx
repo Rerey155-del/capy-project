@@ -1,187 +1,119 @@
-// import React from 'react'
-import NavBar from "../components/NavBar/NavBar";
+import { useEffect, useMemo, useState } from "react";
 import Footer from "../components/Footer/Footer";
-
+import NavBar from "../components/NavBar/NavBar";
+import api from "../lib/api";
 import { MdOutlineSearch } from "react-icons/md";
 
-import { Link } from "react-router-dom";
+import BearingImg from "../../assets/BEARING 6201 2RS KOYO JAPAN ORIGINAL.jpg";
+import FilterImg from "../../assets/Filter Saringan Udara Vario 150 125 Nemo Honda Vario 150 125.jpg";
+import BohlamImg from "../../assets/BOHLAM DEPAN MOTOR OSRAM HALOGEN BEBEK MATIC 18 25 32 WATT ASLI OSRAM - 18W (1PC).jpg";
+import AkiImg from "../../assets/Aki untuk segala motor matic ISS YTZ6V Yuasa Aki Kering.jpg";
+import CvtImg from "../../assets/PAKET FULL UPGRADE CVT SPIN SKYWAVE SKYDRIVE MJRT RACING - 7gr.jpg";
+
+const productImages = [BearingImg, FilterImg, BohlamImg, AkiImg, CvtImg];
+
+const formatRupiah = (value) =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(value || 0);
 
 function SukuCadangList() {
+  const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get("/data_produk");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Gagal mengambil data suku cadang:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const filteredProducts = useMemo(() => {
+    const keyword = search.toLowerCase();
+
+    return products.filter((product) =>
+      [product.nama_produk, product.deskripsi, product.tautan]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(keyword))
+    );
+  }, [products, search]);
+
   return (
-    <div>
+    <div className="min-h-screen bg-white">
       <NavBar />
 
-      <div className="px-10 mt-8">
-        <div className="mb-10 font-bold flex">
-          <div className="flex items-center text-xl w-full">
-            <p>Suku Cadang</p>
-          </div>
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-xl font-bold text-white-text">Suku Cadang</h1>
 
-          <div className="container mx-auto flex items-center justify-end">
-            <form className="flex" role="search">
-              <div className="relative">
-                <MdOutlineSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-3xl text-info-color" />
-                <input
-                  className="form-input pl-12 w-full py-2 px-3 border rounded-lg"
-                  type="search"
-                  placeholder="cari"
-                  aria-label="cari"
-                />
-              </div>
-            </form>
-          </div>
+          <form className="w-full sm:w-80" role="search">
+            <div className="relative">
+              <MdOutlineSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-2xl text-info-color" />
+              <input
+                className="w-full rounded-lg border border-gray-300 py-2.5 pl-11 pr-4 text-sm"
+                type="search"
+                placeholder="cari"
+                aria-label="cari"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </div>
+          </form>
         </div>
-        {/* ======================= Gambar ========================================================== */}
-        {[...Array(4)].map((_, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-5 gap-4 mb-6 max-sm:grid-cols-2 max-sm:mx-auto"
-          >
-            <div className="card w-40 border-4 shadow-lg border-inherit rounded-lg sm:w-auto ">
-              <img
-                src="./assets/BEARING 6201 2RS KOYO JAPAN ORIGINAL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body rounded-lg px-2">
-                <h5 className="card-title font-bold mt-1 leading-snug">
-                  BEARING 6201 2RS KOYO JAPAN ORIGINAL
-                </h5>
-                <p className="card-text truncate font-thin decoration-[#1B1C1E] text-xs mt-2">
-                  BEARING 6201 2RS KOYO JAPAN ORIGINAL
-                </p>
-                <div className="mt-5">
-                  <p className="card-text font-bold mt-2">Rp. 28.500</p>
-                  <div className="flex justify-end mt-[-30px] max-sm:px-6 max-sm:mt-2">
+
+        {loading ? (
+          <p className="text-sm text-info-color">Memuat data suku cadang...</p>
+        ) : (
+          <section className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {filteredProducts.map((product, index) => (
+              <article
+                key={product.id}
+                className="flex min-h-[320px] flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md"
+              >
+                <img
+                  src={productImages[index % productImages.length]}
+                  className="h-36 w-full object-cover"
+                  alt={product.nama_produk}
+                />
+
+                <div className="flex flex-1 flex-col p-3">
+                  <h2 className="line-clamp-2 min-h-[44px] text-sm font-bold leading-snug text-white-text">
+                    {product.nama_produk}
+                  </h2>
+
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-info-color">
+                    {product.deskripsi}
+                  </p>
+
+                  <div className="mt-auto flex items-center justify-between gap-3 pt-5">
+                    <p className="truncate text-sm font-bold text-white-text">
+                      {formatRupiah(product.harga)}
+                    </p>
                     <button
-                      className=" btn-primary bg-success-color  px-8 py-1 rounded-2xl"
-                      style={{ color: "white" }}
-                      type="submit"
+                      className="shrink-0 rounded-full bg-success-color px-5 py-1.5 text-xs font-semibold text-white"
+                      type="button"
                     >
                       Buy
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
+              </article>
+            ))}
+          </section>
+        )}
+      </main>
 
-            <div className="card w-40 border-4 shadow-lg border-inherit rounded-lg sm:w-auto">
-              <img
-                src="./assets/Filter Saringan Udara Vario 150 125 Nemo Honda Vario 150 125.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body rounded-lg px-2">
-                <h5 className="card-title font-bold mt-1 leading-snug">
-                  PAKET FULL UPGRADE CVT SPIN SKYWAVE SKYDRIVE MJRT RACING - 7gr
-                </h5>
-                <p className="card-text truncate font-thin decoration-[#1B1C1E] text-xs mt-2">
-                  MOTOR LELET? TIDAK NYAMAN ? TERASA TARIKAN KASAR HINGGA...
-                </p>
-                <div className="mt-5">
-                  <p className="card-text font-bold mt-2">Rp. 670.000</p>
-                  <div className="flex justify-end mt-[-30px] max-sm:px-6 max-sm:mt-2">
-                    <button
-                      className=" btn-primary bg-success-color  px-8 py-1 rounded-2xl"
-                      style={{ color: "white" }}
-                      type="submit"
-                    >
-                      Buy
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="card w-40 border-4 shadow-lg border-inherit rounded-lg sm:w-auto">
-              <img
-                src="./assets/BOHLAM DEPAN MOTOR OSRAM HALOGEN BEBEK MATIC 18 25 32 WATT ASLI OSRAM - 18W (1PC).jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body rounded-lg px-2">
-                <h5 className="card-title font-bold mt-1 leading-snug">
-                  Aki motor beat vario mio revo accu STZ5S sinus pro
-                </h5>
-                <p className="card-text truncate font-thin decoration-[#1B1C1E] text-xs mt-2">
-                  Aki motor beat vario mio revo accu STZ5S sinus pro
-                </p>
-                <div className="mt-5">
-                  <p className="card-text font-bold mt-2">Rp. 81.000</p>
-                  <div className="flex justify-end mt-[-30px] max-sm:px-6 max-sm:mt-2">
-                    <button
-                      className=" btn-primary bg-success-color  px-8 py-1 rounded-2xl"
-                      style={{ color: "white" }}
-                      type="submit"
-                    >
-                      Buy
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="card w-40 border-4 shadow-lg border-inherit rounded-lg sm:w-auto">
-              <img
-                src="./assets/Aki untuk segala motor matic ISS YTZ6V Yuasa Aki Kering.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body rounded-lg px-2">
-                <h5 className="card-title font-bold mt-1 leading-snug">
-                  Aki motor beat vario mio revo accu STZ5S sinus pro
-                </h5>
-                <p className="card-text truncate font-thin decoration-[#1B1C1E] text-xs mt-2">
-                  Aki motor beat vario mio revo accu STZ5S sinus pro
-                </p>
-                <div className="mt-5">
-                  <p className="card-text font-bold mt-2">Rp. 81.000</p>
-                  <div className="flex justify-end mt-[-30px] max-sm:px-6 max-sm:mt-2">
-                    <button
-                      className=" btn-primary bg-success-color  px-8 py-1 rounded-2xl"
-                      style={{ color: "white" }}
-                      type="submit"
-                    >
-                      Buy
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="card w-40 border-4 shadow-lg border-inherit rounded-lg sm:w-auto">
-              <img
-                src="./assets/PAKET FULL UPGRADE CVT SPIN SKYWAVE SKYDRIVE MJRT RACING - 7gr.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body rounded-lg px-2">
-                <h5 className="card-title font-bold mt-1 leading-snug">
-                  Lampu LED Utama Motor Mobil AYOTO M4A H4 AC DC PNP 30 Watt
-                </h5>
-
-                <p className="card-text truncate font-thin decoration-[#1B1C1E] text-xs mt-2">
-                  Lampu LED Utama Motor Mobil AYOTO M4A H4 AC DC PNP 30 Watt
-                </p>
-
-                <div className="mt-5">
-                  <p className="card-text  font-bold mt-2">Rp. 92.500</p>
-                  <div className="flex justify-end mt-[-30px] max-sm:px-6 max-sm:mt-2">
-                    <button
-                      className=" btn-primary bg-success-color  px-8 py-1 rounded-2xl"
-                      style={{ color: "white" }}
-                      type="submit"
-                    >
-                      Buy
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <br />
       <Footer />
     </div>
   );

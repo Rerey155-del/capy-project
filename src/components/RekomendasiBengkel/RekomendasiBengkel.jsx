@@ -1,7 +1,7 @@
 // import React from 'react';
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../lib/api";
 
 import { FaStar } from "react-icons/fa";
 import { TfiBookmark } from "react-icons/tfi";
@@ -22,7 +22,7 @@ function RekomendasiBengkel() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/data_bengkel");
+        const response = await api.get("/data_bengkel");
         console.log(response.data);
         setBengkels(response.data);
       } catch (error) {
