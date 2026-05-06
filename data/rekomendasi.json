@@ -1,0 +1,54 @@
+{
+  "data_rekomendasi_bengkel": [
+    {
+      "id": 1,
+      "nama_bengkel": "Aneka Motor Service",
+      "jam_buka": 8,
+      "jam_tutup": 20,
+      "nohp": "081276543210",
+      "alamat": "Jl. Dr. Sutomo No. 18",
+      "deskripsi": "Mitra rekomendasi untuk servis ringan, tune up, dan pengecekan motor harian.",
+      "rating": 5
+    },
+    {
+      "id": 2,
+      "nama_bengkel": "Prima Jaya Motor",
+      "jam_buka": 9,
+      "jam_tutup": 18,
+      "nohp": "082112345678",
+      "alamat": "Jl. Veteran No. 45",
+      "deskripsi": "Bengkel rekomendasi dengan layanan oli, rem, aki, dan kelistrikan motor.",
+      "rating": 5
+    },
+    {
+      "id": 3,
+      "nama_bengkel": "Mitra Speed Garage",
+      "jam_buka": 8,
+      "jam_tutup": 21,
+      "nohp": "085266778899",
+      "alamat": "Jl. Diponegoro No. 72",
+      "deskripsi": "Spesialis perawatan motor matic, CVT, dan servis berkala.",
+      "rating": 4
+    },
+    {
+      "id": 4,
+      "nama_bengkel": "Sinar Abadi Motor",
+      "jam_buka": 7,
+      "jam_tutup": 17,
+      "nohp": "081398765432",
+      "alamat": "Jl. Imam Bonjol No. 9",
+      "deskripsi": "Mitra bengkel terpercaya untuk perbaikan cepat dan harga bersahabat.",
+      "rating": 5
+    },
+    {
+      "id": 5,
+      "nama_bengkel": "Garasi Nusantara",
+      "jam_buka": 10,
+      "jam_tutup": 22,
+      "nohp": "087812341234",
+      "alamat": "Jl. Ahmad Yani No. 31",
+      "deskripsi": "Rekomendasi bengkel malam untuk servis darurat dan pengecekan mesin.",
+      "rating": 4
+    }
+  ]
+}

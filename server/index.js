@@ -10,12 +10,18 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dataPath = path.join(__dirname, "..", "data", "product.json");
+const rekomendasiPath = path.join(__dirname, "..", "data", "rekomendasi.json");
 
 app.use(cors());
 app.use(express.json());
 
 const readLocalData = async () => {
   const file = await readFile(dataPath, "utf8");
+  return JSON.parse(file);
+};
+
+const readRekomendasiData = async () => {
+  const file = await readFile(rekomendasiPath, "utf8");
   return JSON.parse(file);
 };
 
@@ -33,7 +39,12 @@ const fetchTableOrFallback = async (tableName) => {
 app.get("/", (req, res) => {
   res.json({
     message: "Capy Express API berjalan",
-    endpoints: ["/data_produk", "/data_bengkel", "/api/health"],
+    endpoints: [
+      "/data_produk",
+      "/data_bengkel",
+      "/data_rekomendasi_bengkel",
+      "/api/health",
+    ],
   });
 });
 
@@ -54,6 +65,11 @@ app.get("/data_produk", async (req, res) => {
 app.get("/data_bengkel", async (req, res) => {
   const workshops = await fetchTableOrFallback("data_bengkel");
   res.json(workshops);
+});
+
+app.get("/data_rekomendasi_bengkel", async (req, res) => {
+  const data = await readRekomendasiData();
+  res.json(data.data_rekomendasi_bengkel || []);
 });
 
 app.listen(port, () => {
